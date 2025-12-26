@@ -9,40 +9,45 @@
         :root { --main: #5d9cec; --sub: #48cfad; --warn: #fc6e51; --bg: #f0f2f5; }
         * { box-sizing: border-box; font-family: sans-serif; }
         body { background: var(--bg); margin: 0; padding: 10px; color: #333; font-size: 14px; }
-        .container { max-width: 100%; margin-bottom: 50px; }
+        .container { max-width: 100%; margin-bottom: 60px; }
         
         /* 固定ヘッダー */
         .header-box { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; position: sticky; top: 0; z-index: 100; }
-        .total-price { color: var(--warn); font-size: 1.5rem; font-weight: bold; }
+        .total-label { font-size: 0.9rem; color: #666; }
+        .total-price { color: var(--warn); font-size: 1.6rem; font-weight: bold; }
 
         /* カード */
-        .day-label { display: block; margin: 15px 0 8px; }
-        .day-input { border: none; background: var(--main); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .day-group { margin-top: 20px; }
+        .day-input { border: none; background: var(--main); color: white; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 10px; }
         .card { background: white; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); overflow: hidden; border-left: 6px solid var(--main); }
         
-        /* 見出し */
-        .card-summary { display: flex; align-items: center; padding: 12px 10px; }
-        .handle { color: #ccc; margin-right: 8px; font-size: 1.2rem; cursor: move; }
-        .t-in { width: 85px; font-weight: bold; color: var(--main); border: 1px solid #eee; border-radius: 4px; padding: 4px; font-size: 0.9rem; }
-        .p-in-top { flex-grow: 1; border: none; font-size: 0.95rem; font-weight: 500; min-width: 0; margin-left: 5px; }
-        .toggle-btn { color: var(--main); font-size: 0.8rem; font-weight: bold; padding: 5px; margin-left: 5px; }
+        /* 見出し（サマリー） */
+        .card-summary { display: flex; align-items: center; padding: 12px 10px; position: relative; }
+        .handle { color: #ccc; margin-right: 8px; font-size: 1.4rem; padding: 5px; touch-action: none; }
+        .t-in { width: 90px; font-weight: bold; color: var(--main); border: 1px solid #eee; border-radius: 6px; padding: 5px; font-size: 0.9rem; background: #fff; }
+        .p-in-top { flex-grow: 1; border: none; font-size: 1rem; font-weight: bold; min-width: 0; margin-left: 8px; background: transparent; }
+        .toggle-btn { color: var(--main); font-size: 0.8rem; font-weight: bold; padding: 5px; border: 1px solid var(--main); border-radius: 6px; white-space: nowrap; margin-left: 5px; }
 
-        /* 詳細 */
+        /* 詳細（アコーディオン） */
         .card-detail { display: none; padding: 15px; background: #fafafa; border-top: 1px solid #eee; }
         .card-detail.active { display: block; }
 
-        .nest-box { background: #f0f4f8; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
-        .map-btn { display: inline-block; background: #4285F4; color: white; padding: 8px 12px; border-radius: 5px; text-decoration: none; margin-bottom: 10px; font-size: 0.8rem; width: 100%; text-align: center; }
+        .info-box { background: #eef3f9; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; line-height: 1.4; border-left: 3px solid #ccc; }
+        .map-btn { display: block; background: #4285F4; color: white; padding: 10px; border-radius: 8px; text-decoration: none; margin-bottom: 15px; font-size: 0.85rem; text-align: center; font-weight: bold; }
         
-        /* 費用明細 */
-        .cost-row { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; }
-        .cost-row input { border: 1px solid #ddd; padding: 6px; border-radius: 4px; font-size: 12px; }
+        /* 費用明細スタイル */
+        .cost-section { border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 10px; }
+        .cost-row { display: flex; gap: 5px; margin-bottom: 8px; align-items: center; }
+        .cost-row input[type="text"] { flex: 2; border: 1px solid #ddd; padding: 8px; border-radius: 5px; font-size: 13px; }
+        .cost-row input[type="number"] { flex: 1; border: 1px solid #ddd; padding: 8px; border-radius: 5px; font-size: 13px; text-align: right; }
+        .row-del { color: #ff5252; background: none; border: none; font-size: 1.2rem; padding: 0 5px; }
 
-        /* ボタン */
-        .btn { border: none; border-radius: 10px; padding: 12px; font-weight: bold; width: 100%; margin-top: 10px; }
-        .btn-save { background: var(--main); color: white; }
-        .btn-add { background: var(--sub); color: white; }
-        .btn-del { background: #ffeded; color: #ff5252; font-size: 0.7rem; border: 1px solid #ff5252; margin-top: 15px; }
+        /* 全体操作ボタン */
+        .btn { border: none; border-radius: 12px; padding: 14px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1rem; }
+        .btn-save { background: var(--main); color: white; box-shadow: 0 4px 0 #4a89d8; }
+        .btn-add { background: var(--sub); color: white; margin-top: 20px; box-shadow: 0 4px 0 #37bc9b; }
+        .btn-del-card { background: #fff; color: #ff5252; font-size: 0.8rem; border: 1px solid #ff5252; margin-top: 20px; padding: 8px; }
+        .btn-add-cost { background: #eee; color: #666; font-size: 0.75rem; padding: 5px; border-radius: 5px; margin-bottom: 10px; display: inline-block; width: auto; }
     </style>
 </head>
 <body>
@@ -50,59 +55,129 @@
 <div class="container">
     <div class="header-box">
         <div style="display:flex; justify-content: space-between; align-items: center;">
-            <span>💰 合計: <span id="total-val" class="total-price">0</span> 円</span>
+            <span class="total-label">💰 予算合計</span>
+            <span><span id="total-val" class="total-price">0</span><small> 円</small></span>
         </div>
-        <button class="btn btn-save" onclick="saveAll()">💾 記録を保存・バックアップ</button>
-        <div id="save-info" style="font-size: 10px; color: #999; text-align: right; margin-top: 5px;"></div>
+        <button class="btn btn-save" onclick="saveAll()">💾 現在の情報を保存する</button>
+        <div id="save-info" style="font-size: 10px; color: #999; text-align: right; margin-top: 8px;"></div>
     </div>
 
     <div id="main-list">
-        <div class="day-label"><input type="date" class="day-input" value="2025-12-29"></div>
-        
-        <div class="card">
-            <div class="card-summary">
-                <span class="handle">☰</span>
-                <input type="time" class="t-in" value="01:30">
-                <input class="p-in-top" value="小牧 出発">
-                <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
+        <div class="day-group">
+            <input type="date" class="day-input" value="2025-12-29">
+            
+            <div class="card">
+                <div class="card-summary">
+                    <span class="handle">☰</span>
+                    <input type="time" class="t-in" value="01:30">
+                    <input class="p-in-top" value="小牧 出発">
+                    <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
+                </div>
+                <div class="card-detail">
+                    <a href="#" class="map-btn" onclick="openMap(this)">🗺️ Googleマップで場所を確認</a>
+                    <div class="info-box">🚗 移動：次の地点まで 約2時間<br>深夜割引適用のため、04:00までに高速へ！</div>
+                    <div class="cost-section">
+                        <div class="cost-row"><input type="text" value="高速代(深夜割替)"><input type="number" class="price-input" value="10290" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+                        <div class="cost-row"><input type="text" value="ガソリン代"><input type="number" class="price-input" value="8000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+                        <button class="btn btn-add-cost" onclick="addCostRow(this)">＋ 明細追加</button>
+                    </div>
+                </div>
             </div>
-            <div class="card-detail">
-                <a href="#" class="map-btn" onclick="openMap(this)">🗺️ Googleマップを開く</a>
-                <div class="nest-box">🚗 移動：次の地点まで 約2時間</div>
-                <div class="cost-row"><input value="高速代" style="width:70px"><input type="number" class="price-input" value="10290" oninput="calc()">円</div>
-                <div class="cost-row"><input value="燃料代" style="width:70px"><input type="number" class="price-input" value="8000" oninput="calc()">円</div>
-                <button class="btn btn-del" onclick="this.parentElement.parentElement.remove();calc()">この項目を削除</button>
+
+            <div class="card">
+                <div class="card-summary">
+                    <span class="handle">☰</span>
+                    <input type="time" class="t-in" value="03:30">
+                    <input class="p-in-top" value="【京都】大津SA">
+                    <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
+                </div>
+                <div class="card-detail">
+                    <a href="#" class="map-btn" onclick="openMap(this)">🗺️ Googleマップで場所を確認</a>
+                    <div class="info-box">⏱️ 滞在：30分<br>楽しみ：琵琶湖一望デッキ。京風お漬物、生八つ橋。</div>
+                    <div class="cost-section">
+                        <div class="cost-row"><input type="text" value="お土産・軽食"><input type="number" class="price-input" value="1000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+                        <button class="btn btn-add-cost" onclick="addCostRow(this)">＋ 明細追加</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-summary">
+                    <span class="handle">☰</span>
+                    <input type="time" class="t-in" value="05:30">
+                    <input class="p-in-top" value="【大阪】吹田SA">
+                    <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
+                </div>
+                <div class="card-detail">
+                    <a href="#" class="map-btn" onclick="openMap(this)">🗺️ Googleマップで場所を確認</a>
+                    <div class="info-box">⏱️ 滞在：30分<br>楽しみ：たこ焼き、豚まん。限定スポンジボブ捜索！</div>
+                    <div class="cost-section">
+                        <div class="cost-row"><input type="text" value="おやつ代"><input type="number" class="price-input" value="1000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+                        <button class="btn btn-add-cost" onclick="addCostRow(this)">＋ 明細追加</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-summary">
+                    <span class="handle">☰</span>
+                    <input type="time" class="t-in" value="10:30">
+                    <input class="p-in-top" value="【広島】原爆ドーム">
+                    <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
+                </div>
+                <div class="card-detail">
+                    <a href="#" class="map-btn" onclick="openMap(this)">🗺️ Googleマップで場所を確認</a>
+                    <div class="info-box">⏱️ 滞在：2時間<br>観光：短時間の散策。駐車場は中島町が便利。</div>
+                    <div class="cost-section">
+                        <div class="cost-row"><input type="text" value="駐車場代"><input type="number" class="price-input" value="1000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+                        <button class="btn btn-add-cost" onclick="addCostRow(this)">＋ 明細追加</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-summary">
+                    <span class="handle">☰</span>
+                    <input type="time" class="t-in" value="15:00">
+                    <input class="p-in-top" value="下関ホテル着">
+                    <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
+                </div>
+                <div class="card-detail">
+                    <div class="info-box">お疲れ様でした！夜は唐戸市場周辺へ。</div>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-summary">
-                <span class="handle">☰</span>
-                <input type="time" class="t-in" value="03:30">
-                <input class="p-in-top" value="大津SA（京都）">
-                <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
-            </div>
-            <div class="card-detail">
-                <a href="#" class="map-btn" onclick="openMap(this)">🗺️ Googleマップを開く</a>
-                <div class="nest-box">⏱️ 滞在：30分<br>🚗 移動：次の地点まで 約2時間</div>
-                <div class="cost-row"><input value="お土産" style="width:70px"><input type="number" class="price-input" value="2000" oninput="calc()">円</div>
-                <button class="btn btn-del" onclick="this.parentElement.parentElement.remove();calc()">この項目を削除</button>
-            </div>
-        </div>
+        <div class="day-group">
+            <input type="date" class="day-input" value="2025-12-30">
 
-        <div class="day-label"><input type="date" class="day-input" value="2025-12-30"></div>
-
-        <div class="card">
-            <div class="card-summary">
-                <span class="handle">☰</span>
-                <input type="time" class="t-in" value="09:00">
-                <input class="p-in-top" value="赤間神宮・亀山八幡宮">
-                <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
+            <div class="card">
+                <div class="card-summary">
+                    <span class="handle">☰</span>
+                    <input type="time" class="t-in" value="09:00">
+                    <input class="p-in-top" value="下関 神社巡り">
+                    <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
+                </div>
+                <div class="card-detail">
+                    <div class="info-box">亀山八幡宮（フグ像）、赤間神宮（竜宮門）。御朱印は9:00〜。</div>
+                    <div class="cost-section">
+                        <div class="cost-row"><input type="text" value="御朱印代"><input type="number" class="price-input" value="1000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+                        <button class="btn btn-add-cost" onclick="addCostRow(this)">＋ 明細追加</button>
+                    </div>
+                </div>
             </div>
-            <div class="card-detail">
-                <a href="#" class="map-btn" onclick="openMap(this)">🗺️ Googleマップを開く</a>
-                <div class="cost-row"><input value="御朱印" style="width:70px"><input type="number" class="price-input" value="1000" oninput="calc()">円</div>
-                <button class="btn btn-del" onclick="this.parentElement.parentElement.remove();calc()">この項目を削除</button>
+
+            <div class="card">
+                <div class="card-summary">
+                    <span class="handle">☰</span>
+                    <input type="time" class="t-in" value="10:30">
+                    <input class="p-in-top" value="角島大橋 観光">
+                    <span class="toggle-btn" onclick="toggleDetail(this)">▼ 詳細</span>
+                </div>
+                <div class="card-detail">
+                    <a href="#" class="map-btn" onclick="openMap(this)">🗺️ Googleマップで場所を確認</a>
+                    <div class="info-box">エメラルドグリーンの絶景ドライブ！</div>
+                </div>
             </div>
         </div>
     </div>
@@ -111,7 +186,7 @@
 </div>
 
 <script>
-    // 並び替え（0.4秒長押し）
+    // 並び替え (長押し0.4秒)
     Sortable.create(document.getElementById('main-list'), {
         handle: '.handle', animation: 150, delay: 400, delayOnTouchOnly: true
     });
@@ -125,13 +200,22 @@
 
     function openMap(el) {
         const name = el.closest('.card').querySelector('.p-in-top').value;
-        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name)}`, '_blank');
+        window.open(`https://www.google.com/maps/search/${encodeURIComponent(name)}`, '_blank');
     }
 
     function calc() {
         let total = 0;
         document.querySelectorAll('.price-input').forEach(i => total += (parseInt(i.value) || 0));
         document.getElementById('total-val').innerText = total.toLocaleString();
+    }
+
+    function delRow(btn) { btn.parentElement.remove(); calc(); }
+
+    function addCostRow(btn) {
+        const row = document.createElement('div');
+        row.className = 'cost-row';
+        row.innerHTML = `<input type="text" placeholder="費目"><input type="number" class="price-input" value="0" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button>`;
+        btn.before(row);
     }
 
     function addNewCard() {
@@ -146,25 +230,23 @@
             </div>
             <div class="card-detail">
                 <a href="#" class="map-btn" onclick="openMap(this)">🗺️ Googleマップを開く</a>
-                <div class="cost-row"><input placeholder="費目" style="width:70px"><input type="number" class="price-input" value="0" oninput="calc()">円</div>
-                <button class="btn btn-del" onclick="this.parentElement.parentElement.remove();calc()">この項目を削除</button>
-            </div>
-        `;
+                <div class="cost-section">
+                    <button class="btn btn-add-cost" onclick="addCostRow(this)">＋ 明細追加</button>
+                </div>
+                <button class="btn btn-del-card" onclick="this.parentElement.parentElement.remove();calc()">予定ごと削除</button>
+            </div>`;
         document.getElementById('main-list').appendChild(div);
     }
 
     function saveAll() {
-        const data = {
-            html: document.getElementById('main-list').innerHTML,
-            time: new Date().toLocaleString()
-        };
-        localStorage.setItem('trip_v3_android', JSON.stringify(data));
+        const data = { html: document.getElementById('main-list').innerHTML, time: new Date().toLocaleString() };
+        localStorage.setItem('shiori_v_final', JSON.stringify(data));
         document.getElementById('save-info').innerText = '保存完了: ' + data.time;
-        alert('現在のスケジュールと費用を保存しました！');
+        alert('スケジュールと費用を保存しました！');
     }
 
     window.onload = () => {
-        const saved = localStorage.getItem('trip_v3_android');
+        const saved = localStorage.getItem('shiori_v_final');
         if (saved) {
             const data = JSON.parse(saved);
             document.getElementById('main-list').innerHTML = data.html;
@@ -175,4 +257,3 @@
 </script>
 </body>
 </html>
-
