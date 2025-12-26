@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>小牧〜下関 ドライブしおり</title>
+    <title>小牧〜下関 ドライブプラン【詳細版】</title>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
         :root { --main: #5d9cec; --sub: #48cfad; --warn: #fc6e51; --bg: #f0f2f5; }
@@ -17,29 +17,31 @@
             border: 1px solid #ddd; border-radius: 5px; padding: 6px; font-size: 14px; min-width: 0;
         }
 
-        /* 費用明細の最適化 */
         .cost-row { display: flex; gap: 4px; margin-bottom: 6px; align-items: center; width: 100%; }
         .cost-row input[type="text"] { flex: 2; }
         .cost-row input[type="number"] { flex: 1.2; text-align: right; }
         .row-del { color: white; background: #ccc; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 
         .day-label { background: var(--main); color: white; padding: 5px 12px; border-radius: 15px; display: inline-block; margin: 10px 0; font-weight: bold; }
+        
+        /* 移動時間の表現 */
+        .travel-time { font-size: 11px; color: #888; text-align: center; margin: 5px 0; border-left: 2px dashed #ddd; margin-left: 50px; padding-left: 10px; }
+
         .card { background: white; border-radius: 10px; margin-bottom: 8px; border-left: 5px solid var(--main); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .card-summary { display: flex; align-items: center; padding: 10px; }
         .handle { color: #ddd; padding-right: 8px; font-size: 1.4rem; touch-action: none; }
         .t-in { width: 85px; }
-        .p-in-top { flex-grow: 1; border: none !important; font-weight: bold; margin-left: 5px; font-size: 0.95rem; background: transparent; }
+        .p-in-top { flex-grow: 1; border: none !important; font-weight: bold; margin-left: 5px; font-size: 0.92rem; background: transparent; }
         .toggle-btn { color: var(--main); border: 1px solid var(--main); border-radius: 5px; padding: 4px 8px; font-size: 11px; white-space: nowrap; }
 
         .card-detail { display: none; padding: 12px; background: #fafafa; border-top: 1px solid #eee; }
         .card-detail.active { display: block; }
 
         .info-box { background: #eef3f9; padding: 8px; border-radius: 8px; font-size: 11px; margin-bottom: 10px; line-height: 1.4; }
-        .map-link { display: inline-block; background: #4285F4; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 11px; margin-bottom: 10px; font-weight: bold; }
+        .map-link { display: inline-block; background: #4285F4; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 11px; margin-bottom: 10px; font-weight: bold; margin-right: 5px;}
 
         .btn { border: none; border-radius: 10px; padding: 12px; font-weight: bold; cursor: pointer; width: 100%; }
         .btn-save { background: var(--main); color: white; margin-top: 10px; }
-        .btn-add { background: var(--sub); color: white; margin-top: 15px; }
         .btn-add-cost { background: #eee; color: #666; font-size: 12px; padding: 6px; width: auto; margin: 5px 0; border-radius: 5px; display: inline-block; }
 
         .hist-item { display: flex; justify-content: space-between; background: #e9ecef; padding: 8px; border-radius: 6px; margin-bottom: 5px; font-size: 11px; align-items: center; }
@@ -57,9 +59,8 @@
     <div style="margin-top:10px; border-top: 1px solid #eee; padding-top:10px">
         <div style="font-size:11px; color:#666; margin-bottom:5px">▼ 初期費用（高速・燃料・宿泊）</div>
         <div id="base-costs">
-            <div class="cost-row"><input type="text" value="高速(小牧-下関 深夜割)"><input type="number" class="price-input" value="10290" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
-            <div class="cost-row"><input type="text" value="ガソリン代(片道目安)"><input type="number" class="price-input" value="7000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
-            <div class="cost-row"><input type="text" value="駐車場代(広島・下関)"><input type="number" class="price-input" value="1000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+            <div class="cost-row"><input type="text" value="高速(深夜割適用目安)"><input type="number" class="price-input" value="10290" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+            <div class="cost-row"><input type="text" value="ガソリン代見込み"><input type="number" class="price-input" value="8000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
         </div>
         <button class="btn-add-cost" onclick="addCostRow('base-costs')">＋ 項目を追加</button>
     </div>
@@ -73,69 +74,102 @@
         <div class="card-summary">
             <span class="handle">☰</span>
             <input type="time" class="t-in" value="01:30">
-            <input class="p-in-top" value="小牧 出発">
+            <input class="p-in-top" value="小牧市 出発">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <div class="info-box">4時までに高速通過で深夜割引30%OFF！安全運転で🧽</div>
-            <div class="cost-area"></div>
-            <button class="btn-add-cost" onclick="addCostRow(this)">＋ 費用を追加</button>
+            <div class="info-box">04:00までに高速道路を通過すると深夜割引(30%OFF)が適用されます！</div>
         </div>
     </div>
+
+    <div class="travel-time">🚗 移動：約1時間34分 (129km)</div>
 
     <div class="card">
         <div class="card-summary">
             <span class="handle">☰</span>
             <input type="time" class="t-in" value="03:30">
-            <input class="p-in-top" value="【京都】大津SA（下り）">
+            <input class="p-in-top" value="大津SA (下り) 着">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
             <a href="https://www.w-holdings.co.jp/sapa/02080/" class="map-link" target="_blank">🔗 公式サイト</a>
-            <div class="info-box">住所：滋賀県大津市朝日が丘2-8-1<br>楽しみ：琵琶湖展望デッキ、京風漬物、生八つ橋</div>
-            <div class="cost-row"><input type="text" value="朝食・土産"><input type="number" class="price-input" value="1500" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
-            <button class="btn-add-cost" onclick="addCostRow(this)">＋ 費用を追加</button>
+            <div class="info-box">住所：滋賀県大津市朝日が丘２丁目８−１<br>見どころ：琵琶湖を一望できる展望デッキ。京風のお土産が充実！</div>
+            <div class="cost-row"><input type="text" value="軽食・土産"><input type="number" class="price-input" value="1500" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
         </div>
     </div>
+
+    <div class="travel-time">🚗 移動：約32分 (43.3km)</div>
 
     <div class="card">
         <div class="card-summary">
             <span class="handle">☰</span>
             <input type="time" class="t-in" value="05:30">
-            <input class="p-in-top" value="【大阪】吹田SA（下り）">
+            <input class="p-in-top" value="吹田SA (下り) 着">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
             <a href="https://www.w-holdings.co.jp/sapa/02120/" class="map-link" target="_blank">🔗 公式サイト</a>
-            <div class="info-box">楽しみ：たこ焼き・豚まん。大阪限定スポンジボブ捜索！</div>
-            <div class="cost-area"></div>
-            <button class="btn-add-cost" onclick="addCostRow(this)">＋ 費用を追加</button>
+            <div class="info-box">住所：大阪府吹田市岸部北４丁目８−１<br>ポイント：大阪名物の軽食あり。ご当地スポンジボブ（大阪限定）をチェック！</div>
         </div>
     </div>
+
+    <div class="travel-time">🚗 移動：約2時間3分 (174km)</div>
+
+    <div class="card">
+        <div class="card-summary">
+            <span class="handle">☰</span>
+            <input type="time" class="t-in" value="08:00">
+            <input class="p-in-top" value="吉備SA (下り) 着">
+            <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
+        </div>
+        <div class="card-detail">
+            <a href="http://www.w-holdings.co.jp/sapa/2367.html" class="map-link" target="_blank">🔗 公式サイト</a>
+            <div class="info-box">住所：岡山県岡山市北区今岡４７６<br>グルメ：岡山名物「えびめし」や「清水白桃ソフト」、きびだんご。</div>
+        </div>
+    </div>
+
+    <div class="travel-time">🚗 移動：約1時間56分 (156km)</div>
 
     <div class="card">
         <div class="card-summary">
             <span class="handle">☰</span>
             <input type="time" class="t-in" value="10:30">
-            <input class="p-in-top" value="【広島】原爆ドーム">
+            <input class="p-in-top" value="原爆ドーム 散策/昼食">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <div class="info-box">世界遺産散策。駐車場は中島町駐車場が便利。<br>お昼はお好み焼きを！</div>
-            <div class="cost-area"></div>
-            <button class="btn-add-cost" onclick="addCostRow(this)">＋ 費用を追加</button>
+            <a href="https://www.city.hiroshima.lg.jp/atomicbomb-peace/index.html" class="map-link" target="_blank">🔗 公式サイト</a>
+            <div class="info-box">住所：広島県広島市中区大手町１丁目１−１０<br>駐車場：市営中島町駐車場などが便利。お好み焼きを堪能。</div>
+            <div class="cost-row"><input type="text" value="昼食代"><input type="number" class="price-input" value="2000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
         </div>
     </div>
+
+    <div class="travel-time">🚗 移動：約23分 (19.9km)</div>
 
     <div class="card">
         <div class="card-summary">
             <span class="handle">☰</span>
-            <input type="time" class="t-in" value="15:00">
+            <input type="time" class="t-in" value="13:30">
+            <input class="p-in-top" value="宮島SA (下り) 着">
+            <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
+        </div>
+        <div class="card-detail">
+            <a href="http://www.w-holdings.co.jp/sapa/2393.html" class="map-link" target="_blank">🔗 公式サイト</a>
+            <div class="info-box">住所：広島県廿日市市上平良７６<br>ポイント：もみじ饅頭バラ売り、牡蠣の串焼き。広島限定ボブを捜索！</div>
+        </div>
+    </div>
+
+    <div class="travel-time">🚗 移動：約2時間7分 (182km)</div>
+
+    <div class="card">
+        <div class="card-summary">
+            <span class="handle">☰</span>
+            <input type="time" class="t-in" value="16:00">
             <input class="p-in-top" value="下関ホテル チェックイン">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <div class="info-box">お疲れ様でした！夜の唐戸市場周辺へ。</div>
+            <div class="info-box">お疲れ様でした！夜は唐戸市場周辺へ。</div>
         </div>
     </div>
 
@@ -145,33 +179,33 @@
         <div class="card-summary">
             <span class="handle">☰</span>
             <input type="time" class="t-in" value="09:00">
-            <input class="p-in-top" value="下関 神社巡り（亀山・赤間）">
+            <input class="p-in-top" value="下関 神社巡り(亀山・赤間)">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <div class="info-box">亀山八幡宮：フグの像<br>赤間神宮：竜宮門が特徴。御朱印受付は9:00〜</div>
-            <div class="cost-row"><input type="text" value="御朱印代"><input type="number" class="price-input" value="1000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
-            <button class="btn-add-cost" onclick="addCostRow(this)">＋ 費用を追加</button>
+            <a href="http://www.kameyamagu.com/" class="map-link" target="_blank">🔗 亀山八幡宮</a>
+            <a href="https://akama-jingu.com/" class="map-link" target="_blank">🔗 赤間神宮</a>
+            <div class="info-box">赤間神宮の鮮やかな朱塗りの門は必見。亀山八幡宮には大きなフグの像があります。</div>
         </div>
     </div>
+
+    <div class="travel-time">🚗 移動：約1時間 (下関市街より)</div>
 
     <div class="card">
         <div class="card-summary">
             <span class="handle">☰</span>
             <input type="time" class="t-in" value="10:30">
-            <input class="p-in-top" value="角島大橋 観光">
+            <input class="p-in-top" value="角島大橋 ドライブ">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <div class="info-box">エメラルドグリーンの海を渡る絶景ドライブ！</div>
+            <div class="info-box">エメラルドグリーンの絶景！日本の橋ランキングでも常に上位のスポットです。</div>
         </div>
     </div>
 </div>
 
-<button class="btn btn-add" onclick="addNewCard()">＋ 予定を自由に追加</button>
-
 <div class="box" style="margin-top:20px; background:#f8f9fa">
-    <div style="font-weight:bold; font-size:12px; margin-bottom:8px">🕒 バックアップ履歴（クリックで復元）</div>
+    <div style="font-weight:bold; font-size:12px; margin-bottom:8px">🕒 保存履歴（復元用）</div>
     <div id="hist-list"></div>
 </div>
 
@@ -193,30 +227,12 @@
 
     function delRow(btn) { btn.parentElement.remove(); calc(); }
 
-    function addCostRow(target) {
-        const parent = typeof target === 'string' ? document.getElementById(target) : (target.classList.contains('btn-add-cost') ? target.previousElementSibling : target);
+    function addCostRow(targetId) {
+        const parent = document.getElementById(targetId);
         const div = document.createElement('div');
         div.className = 'cost-row';
         div.innerHTML = `<input type="text" placeholder="項目名"><input type="number" class="price-input" value="0" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button>`;
         parent.appendChild(div);
-    }
-
-    function addNewCard() {
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-            <div class="card-summary">
-                <span class="handle">☰</span>
-                <input type="time" class="t-in" value="12:00">
-                <input class="p-in-top" placeholder="新しい予定">
-                <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
-            </div>
-            <div class="card-detail">
-                <div class="cost-area"></div>
-                <button class="btn-add-cost" onclick="addCostRow(this.previousElementSibling)">＋ 費用を追加</button>
-                <button class="btn" style="background:#eee; color:#999; font-size:11px; padding:5px; margin-top:10px" onclick="this.parentElement.parentElement.remove();calc()">予定を削除</button>
-            </div>`;
-        document.getElementById('main-list').appendChild(div);
     }
 
     function saveAll() {
@@ -225,32 +241,31 @@
             listHtml: document.getElementById('main-list').innerHTML,
             time: new Date().toLocaleString()
         };
-        let h = JSON.parse(localStorage.getItem('shiori_backup') || '[]');
+        let h = JSON.parse(localStorage.getItem('trip_v2_backup') || '[]');
         h.unshift(data);
-        localStorage.setItem('shiori_backup', JSON.stringify(h.slice(0, 10)));
+        localStorage.setItem('trip_v2_backup', JSON.stringify(h.slice(0, 5)));
         renderHist();
-        alert('バックアップを作成しました！');
+        alert('保存しました！');
     }
 
     function renderHist() {
-        const h = JSON.parse(localStorage.getItem('shiori_backup') || '[]');
+        const h = JSON.parse(localStorage.getItem('trip_v2_backup') || '[]');
         document.getElementById('hist-list').innerHTML = h.map((d, i) => `
             <div class="hist-item">
-                <span>保存: ${d.time}</span>
-                <button class="btn-restore" onclick="restore(${i})">復元</button>
+                <span>${d.time}</span>
+                <button class="btn-restore" onclick="restore(${i})">読み出す</button>
             </div>`).join('');
     }
 
     function restore(i) {
-        const h = JSON.parse(localStorage.getItem('shiori_backup') || '[]');
+        const h = JSON.parse(localStorage.getItem('trip_v2_backup') || '[]');
         document.getElementById('base-costs').innerHTML = h[i].baseHtml;
         document.getElementById('main-list').innerHTML = h[i].listHtml;
         calc();
-        alert('データを復元しました！');
     }
 
     window.onload = () => {
-        const h = JSON.parse(localStorage.getItem('shiori_backup') || '[]');
+        const h = JSON.parse(localStorage.getItem('trip_v2_backup') || '[]');
         if (h.length > 0) restore(0); else calc();
         renderHist();
     };
