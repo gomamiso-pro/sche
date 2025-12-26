@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>小牧〜下関 ドライブプラン【詳細版】</title>
+    <title>小牧〜下関 ドライブプラン【カスタム版】</title>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
         :root { --main: #5d9cec; --sub: #48cfad; --warn: #fc6e51; --bg: #f0f2f5; }
@@ -20,29 +20,30 @@
         .cost-row { display: flex; gap: 4px; margin-bottom: 6px; align-items: center; width: 100%; }
         .cost-row input[type="text"] { flex: 2; }
         .cost-row input[type="number"] { flex: 1.2; text-align: right; }
-        .row-del { color: white; background: #ccc; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .row-del { color: white; background: #ccc; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        .day-label { background: var(--main); color: white; padding: 5px 12px; border-radius: 15px; display: inline-block; margin: 10px 0; font-weight: bold; }
+        .day-label { background: var(--main); color: white; padding: 5px 12px; border-radius: 15px; display: inline-block; margin: 15px 0 10px 0; font-weight: bold; }
         
-        /* 移動時間の表現 */
         .travel-time { font-size: 11px; color: #888; text-align: center; margin: 5px 0; border-left: 2px dashed #ddd; margin-left: 50px; padding-left: 10px; }
 
         .card { background: white; border-radius: 10px; margin-bottom: 8px; border-left: 5px solid var(--main); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .card-summary { display: flex; align-items: center; padding: 10px; }
-        .handle { color: #ddd; padding-right: 8px; font-size: 1.4rem; touch-action: none; }
-        .t-in { width: 85px; }
-        .p-in-top { flex-grow: 1; border: none !important; font-weight: bold; margin-left: 5px; font-size: 0.92rem; background: transparent; }
-        .toggle-btn { color: var(--main); border: 1px solid var(--main); border-radius: 5px; padding: 4px 8px; font-size: 11px; white-space: nowrap; }
+        .card-summary { display: flex; align-items: center; padding: 10px; gap: 5px; }
+        .handle { color: #ddd; padding-right: 3px; font-size: 1.2rem; touch-action: none; cursor: grab; }
+        .t-in { width: 80px; }
+        .stay-in { width: 55px; color: var(--sub); font-weight: bold; text-align: center; border-color: var(--sub) !important; }
+        .p-in-top { flex-grow: 1; border: none !important; font-weight: bold; font-size: 0.92rem; background: transparent; }
+        .toggle-btn { color: var(--main); border: 1px solid var(--main); border-radius: 5px; padding: 4px 6px; font-size: 11px; white-space: nowrap; cursor: pointer; }
 
         .card-detail { display: none; padding: 12px; background: #fafafa; border-top: 1px solid #eee; }
         .card-detail.active { display: block; }
 
         .info-box { background: #eef3f9; padding: 8px; border-radius: 8px; font-size: 11px; margin-bottom: 10px; line-height: 1.4; }
-        .map-link { display: inline-block; background: #4285F4; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 11px; margin-bottom: 10px; font-weight: bold; margin-right: 5px;}
+        .map-btn { display: inline-flex; align-items: center; background: #4285F4; color: white; padding: 6px 10px; border-radius: 5px; text-decoration: none; font-size: 11px; font-weight: bold; gap: 4px; }
 
         .btn { border: none; border-radius: 10px; padding: 12px; font-weight: bold; cursor: pointer; width: 100%; }
         .btn-save { background: var(--main); color: white; margin-top: 10px; }
-        .btn-add-cost { background: #eee; color: #666; font-size: 12px; padding: 6px; width: auto; margin: 5px 0; border-radius: 5px; display: inline-block; }
+        .btn-add-spot { background: var(--sub); color: white; margin: 10px 0; font-size: 13px; padding: 8px; }
+        .btn-add-cost { background: #eee; color: #666; font-size: 11px; padding: 4px 8px; width: auto; border-radius: 4px; display: inline-block; margin-top: 5px; }
 
         .hist-item { display: flex; justify-content: space-between; background: #e9ecef; padding: 8px; border-radius: 6px; margin-bottom: 5px; font-size: 11px; align-items: center; }
         .btn-restore { background: #666; color: white; padding: 3px 10px; border-radius: 4px; border: none; }
@@ -55,16 +56,14 @@
         <span style="font-weight:bold">💰 旅の合計:</span>
         <span class="total-price"><span id="total-val">0</span> 円</span>
     </div>
-    
-    <div style="margin-top:10px; border-top: 1px solid #eee; padding-top:10px">
-        <div style="font-size:11px; color:#666; margin-bottom:5px">▼ 初期費用（高速・燃料・宿泊）</div>
+    <div style="margin-top:8px; border-top: 1px solid #eee; padding-top:8px">
         <div id="base-costs">
             <div class="cost-row"><input type="text" value="高速(深夜割適用目安)"><input type="number" class="price-input" value="10290" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
             <div class="cost-row"><input type="text" value="ガソリン代見込み"><input type="number" class="price-input" value="8000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
         </div>
-        <button class="btn-add-cost" onclick="addCostRow('base-costs')">＋ 項目を追加</button>
+        <button class="btn-add-cost" onclick="addCostRow('base-costs')">＋ 固定費を追加</button>
     </div>
-    <button class="btn btn-save" onclick="saveAll()">💾 変更を保存してバックアップ</button>
+    <button class="btn btn-save" onclick="saveAll()">💾 変更を保存(バックアップ)</button>
 </div>
 
 <div id="main-list">
@@ -78,100 +77,77 @@
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <div class="info-box">04:00までに高速道路を通過すると深夜割引(30%OFF)が適用されます！</div>
+            <div class="info-box">04:00までに高速道路を通過で深夜割引適用！</div>
         </div>
     </div>
 
-    <div class="travel-time">🚗 移動：約1時間34分 (129km)</div>
+    <div class="travel-time">🚗 約1.5時間</div>
 
     <div class="card">
         <div class="card-summary">
             <span class="handle">☰</span>
-            <input type="time" class="t-in" value="03:30">
-            <input class="p-in-top" value="大津SA (下り) 着">
+            <input type="time" class="t-in" value="03:00">
+            滞在 <input type="number" class="stay-in" value="30">分
+            <input class="p-in-top" value="大津SA (下り)">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <a href="https://www.w-holdings.co.jp/sapa/02080/" class="map-link" target="_blank">🔗 公式サイト</a>
-            <div class="info-box">住所：滋賀県大津市朝日が丘２丁目８−１<br>見どころ：琵琶湖を一望できる展望デッキ。京風のお土産が充実！</div>
-            <div class="cost-row"><input type="text" value="軽食・土産"><input type="number" class="price-input" value="1500" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+            <div class="info-box">住所：滋賀県大津市朝日が丘２丁目８−１<br>電話：077-510-7350<br>★琵琶湖が見える展望デッキあり</div>
+            <a href="https://www.google.com/maps/search/?api=1&query=大津SA(下り)" class="map-btn" target="_blank">📍 マップで見る</a>
+            <div class="cost-row"><input type="text" value="軽食"><input type="number" class="price-input" value="1000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
         </div>
     </div>
 
-    <div class="travel-time">🚗 移動：約32分 (43.3km)</div>
+    <div class="travel-time">🚗 約0.5時間</div>
 
     <div class="card">
         <div class="card-summary">
             <span class="handle">☰</span>
-            <input type="time" class="t-in" value="05:30">
-            <input class="p-in-top" value="吹田SA (下り) 着">
+            <input type="time" class="t-in" value="04:00">
+            滞在 <input type="number" class="stay-in" value="20">分
+            <input class="p-in-top" value="吹田 SA (下り)">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <a href="https://www.w-holdings.co.jp/sapa/02120/" class="map-link" target="_blank">🔗 公式サイト</a>
-            <div class="info-box">住所：大阪府吹田市岸部北４丁目８−１<br>ポイント：大阪名物の軽食あり。ご当地スポンジボブ（大阪限定）をチェック！</div>
+            <div class="info-box">住所：大阪府吹田市岸部北４丁目８−１<br>大阪土産の先行チェック！</div>
+            <a href="https://www.google.com/maps/search/?api=1&query=吹田SA(下り)" class="map-btn" target="_blank">📍 マップで見る</a>
         </div>
     </div>
 
-    <div class="travel-time">🚗 移動：約2時間3分 (174km)</div>
+    <div class="travel-time">🚗 約2.5時間</div>
 
     <div class="card">
         <div class="card-summary">
             <span class="handle">☰</span>
-            <input type="time" class="t-in" value="08:00">
-            <input class="p-in-top" value="吉備SA (下り) 着">
+            <input type="time" class="t-in" value="07:30">
+            滞在 <input type="number" class="stay-in" value="40">分
+            <input class="p-in-top" value="吉備SA (下り)">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <a href="http://www.w-holdings.co.jp/sapa/2367.html" class="map-link" target="_blank">🔗 公式サイト</a>
-            <div class="info-box">住所：岡山県岡山市北区今岡４７６<br>グルメ：岡山名物「えびめし」や「清水白桃ソフト」、きびだんご。</div>
+            <div class="info-box">住所：岡山県岡山市北区今岡４７６<br>電話：086-284-8600<br>名物「えびめし」が人気。</div>
+            <a href="https://www.google.com/maps/search/?api=1&query=吉備SA(下り)" class="map-btn" target="_blank">📍 マップで見る</a>
         </div>
     </div>
 
-    <div class="travel-time">🚗 移動：約1時間56分 (156km)</div>
+    <div class="travel-time">🚗 約2時間</div>
 
     <div class="card">
         <div class="card-summary">
             <span class="handle">☰</span>
             <input type="time" class="t-in" value="10:30">
-            <input class="p-in-top" value="原爆ドーム 散策/昼食">
+            滞在 <input type="number" class="stay-in" value="120">分
+            <input class="p-in-top" value="原爆ドーム (昼食込)">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <a href="https://www.city.hiroshima.lg.jp/atomicbomb-peace/index.html" class="map-link" target="_blank">🔗 公式サイト</a>
-            <div class="info-box">住所：広島県広島市中区大手町１丁目１−１０<br>駐車場：市営中島町駐車場などが便利。お好み焼きを堪能。</div>
-            <div class="cost-row"><input type="text" value="昼食代"><input type="number" class="price-input" value="2000" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
+            <div class="info-box">住所：広島県広島市中区大手町１丁目１−１０<br>世界遺産。周辺でお好み焼きを！</div>
+            <a href="https://www.google.com/maps/search/?api=1&query=原爆ドーム" class="map-btn" target="_blank">📍 マップで見る</a>
+            <div class="cost-row"><input type="text" value="昼食"><input type="number" class="price-input" value="2500" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button></div>
         </div>
     </div>
 
-    <div class="travel-time">🚗 移動：約23分 (19.9km)</div>
-
-    <div class="card">
-        <div class="card-summary">
-            <span class="handle">☰</span>
-            <input type="time" class="t-in" value="13:30">
-            <input class="p-in-top" value="宮島SA (下り) 着">
-            <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
-        </div>
-        <div class="card-detail">
-            <a href="http://www.w-holdings.co.jp/sapa/2393.html" class="map-link" target="_blank">🔗 公式サイト</a>
-            <div class="info-box">住所：広島県廿日市市上平良７６<br>ポイント：もみじ饅頭バラ売り、牡蠣の串焼き。広島限定ボブを捜索！</div>
-        </div>
-    </div>
-
-    <div class="travel-time">🚗 移動：約2時間7分 (182km)</div>
-
-    <div class="card">
-        <div class="card-summary">
-            <span class="handle">☰</span>
-            <input type="time" class="t-in" value="16:00">
-            <input class="p-in-top" value="下関ホテル チェックイン">
-            <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
-        </div>
-        <div class="card-detail">
-            <div class="info-box">お疲れ様でした！夜は唐戸市場周辺へ。</div>
-        </div>
-    </div>
+    <button class="btn btn-add-spot" onclick="addNewSpot()">➕ 新しい予定を追加</button>
 
     <div class="day-label"><input type="date" value="2025-12-30" style="border:none; background:transparent; color:white; font-weight:bold"></div>
     
@@ -179,44 +155,30 @@
         <div class="card-summary">
             <span class="handle">☰</span>
             <input type="time" class="t-in" value="09:00">
-            <input class="p-in-top" value="下関 神社巡り(亀山・赤間)">
+            滞在 <input type="number" class="stay-in" value="60">分
+            <input class="p-in-top" value="赤間神宮">
             <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
         </div>
         <div class="card-detail">
-            <a href="http://www.kameyamagu.com/" class="map-link" target="_blank">🔗 亀山八幡宮</a>
-            <a href="https://akama-jingu.com/" class="map-link" target="_blank">🔗 赤間神宮</a>
-            <div class="info-box">赤間神宮の鮮やかな朱塗りの門は必見。亀山八幡宮には大きなフグの像があります。</div>
-        </div>
-    </div>
-
-    <div class="travel-time">🚗 移動：約1時間 (下関市街より)</div>
-
-    <div class="card">
-        <div class="card-summary">
-            <span class="handle">☰</span>
-            <input type="time" class="t-in" value="10:30">
-            <input class="p-in-top" value="角島大橋 ドライブ">
-            <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
-        </div>
-        <div class="card-detail">
-            <div class="info-box">エメラルドグリーンの絶景！日本の橋ランキングでも常に上位のスポットです。</div>
+            <div class="info-box">住所：山口県下関市阿弥陀寺町４−１<br>鮮やかな竜宮造りの水天門が有名。</div>
+            <a href="https://www.google.com/maps/search/?api=1&query=赤間神宮" class="map-btn" target="_blank">📍 マップで見る</a>
         </div>
     </div>
 </div>
 
 <div class="box" style="margin-top:20px; background:#f8f9fa">
-    <div style="font-weight:bold; font-size:12px; margin-bottom:8px">🕒 保存履歴（復元用）</div>
+    <div style="font-weight:bold; font-size:12px; margin-bottom:8px">🕒 保存履歴</div>
     <div id="hist-list"></div>
 </div>
 
 <script>
-    Sortable.create(document.getElementById('main-list'), {
-        handle: '.handle', animation: 150, delay: 400, delayOnTouchOnly: true
-    });
+    const mainList = document.getElementById('main-list');
+    Sortable.create(mainList, { handle: '.handle', animation: 150 });
 
     function toggleDetail(btn) {
-        btn.parentElement.nextElementSibling.classList.toggle('active');
-        btn.innerText = btn.innerText === '詳細' ? '閉じる' : '詳細';
+        const detail = btn.parentElement.nextElementSibling;
+        detail.classList.toggle('active');
+        btn.innerText = detail.classList.contains('active') ? '閉じる' : '詳細';
     }
 
     function calc() {
@@ -228,11 +190,37 @@
     function delRow(btn) { btn.parentElement.remove(); calc(); }
 
     function addCostRow(targetId) {
-        const parent = document.getElementById(targetId);
         const div = document.createElement('div');
         div.className = 'cost-row';
         div.innerHTML = `<input type="text" placeholder="項目名"><input type="number" class="price-input" value="0" oninput="calc()"><button class="row-del" onclick="delRow(this)">×</button>`;
-        parent.appendChild(div);
+        document.getElementById(targetId).appendChild(div);
+    }
+
+    function addNewSpot() {
+        const btnAdd = document.querySelector('.btn-add-spot');
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+            <div class="card-summary">
+                <span class="handle">☰</span>
+                <input type="time" class="t-in" value="12:00">
+                滞在 <input type="number" class="stay-in" value="30">分
+                <input class="p-in-top" value="新しい予定">
+                <span class="toggle-btn" onclick="toggleDetail(this)">詳細</span>
+            </div>
+            <div class="card-detail">
+                <div class="info-box">メモを入力...</div>
+                <input type="text" placeholder="場所名" style="width:100%; margin-bottom:5px" onchange="updateMapLink(this)">
+                <a href="#" class="map-btn" target="_blank">📍 マップで見る</a>
+                <button class="row-del" style="margin-top:10px" onclick="this.closest('.card').remove()">この予定を削除</button>
+            </div>
+        `;
+        mainList.insertBefore(div, btnAdd);
+    }
+
+    function updateMapLink(input) {
+        const link = input.nextElementSibling;
+        link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(input.value)}`;
     }
 
     function saveAll() {
@@ -241,31 +229,31 @@
             listHtml: document.getElementById('main-list').innerHTML,
             time: new Date().toLocaleString()
         };
-        let h = JSON.parse(localStorage.getItem('trip_v2_backup') || '[]');
+        let h = JSON.parse(localStorage.getItem('trip_v3_backup') || '[]');
         h.unshift(data);
-        localStorage.setItem('trip_v2_backup', JSON.stringify(h.slice(0, 5)));
+        localStorage.setItem('trip_v3_backup', JSON.stringify(h.slice(0, 5)));
         renderHist();
         alert('保存しました！');
     }
 
     function renderHist() {
-        const h = JSON.parse(localStorage.getItem('trip_v2_backup') || '[]');
+        const h = JSON.parse(localStorage.getItem('trip_v3_backup') || '[]');
         document.getElementById('hist-list').innerHTML = h.map((d, i) => `
             <div class="hist-item">
                 <span>${d.time}</span>
-                <button class="btn-restore" onclick="restore(${i})">読み出す</button>
+                <button class="btn-restore" onclick="restore(${i})">復元</button>
             </div>`).join('');
     }
 
     function restore(i) {
-        const h = JSON.parse(localStorage.getItem('trip_v2_backup') || '[]');
+        const h = JSON.parse(localStorage.getItem('trip_v3_backup') || '[]');
         document.getElementById('base-costs').innerHTML = h[i].baseHtml;
         document.getElementById('main-list').innerHTML = h[i].listHtml;
         calc();
     }
 
     window.onload = () => {
-        const h = JSON.parse(localStorage.getItem('trip_v2_backup') || '[]');
+        const h = JSON.parse(localStorage.getItem('trip_v3_backup') || '[]');
         if (h.length > 0) restore(0); else calc();
         renderHist();
     };
