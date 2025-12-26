@@ -2,76 +2,214 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【2025最新】小牧〜下関 旅のしおり</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>旅のしおり - 記録機能付</title>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
-        :root { --primary: #5d9cec; --bg: #f5f7fa; --text: #434a54; --accent: #fc6e51; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h1 { text-align: center; color: var(--primary); }
-        .day-label { background: var(--primary); color: white; padding: 8px 15px; border-radius: 20px; display: inline-block; margin: 20px 0 10px; font-weight: bold; }
-        .card { background: white; margin-bottom: 8px; padding: 12px; border-radius: 8px; border-left: 5px solid var(--primary); display: flex; align-items: center; cursor: grab; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .time-input { width: 60px; font-weight: bold; border: none; color: var(--primary); font-size: 1rem; }
-        .content-input { flex-grow: 1; border: none; padding: 5px; font-size: 0.95rem; margin: 0 10px; }
-        .cost-input { width: 70px; border: 1px solid #ddd; border-radius: 4px; padding: 3px; text-align: right; }
-        .btn { border: none; border-radius: 5px; cursor: pointer; padding: 8px 12px; }
-        .btn-add { background: #48cfad; color: white; width: 100%; margin-top: 10px; }
-        .btn-del { background: #ed5565; color: white; margin-left: 10px; font-size: 0.7rem; }
-        .total-area { text-align: right; font-size: 1.2rem; font-weight: bold; color: var(--accent); margin-top: 15px; }
+        :root {
+            --primary: #5d9cec;
+            --secondary: #48cfad;
+            --accent: #fc6e51;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 15px;
+            color: #333;
+            -webkit-user-select: none; /* テキスト選択を防いで操作性向上 */
+        }
+
+        .container { max-width: 100%; margin: 0 auto; }
+        
+        h1 { font-size: 1.4rem; text-align: center; color: var(--primary); margin-bottom: 15px; }
+
+        .box {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .cost-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; }
+        input[type="number"], input[type="text"] {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px;
+            font-size: 1rem;
+        }
+
+        .day-header {
+            font-weight: bold;
+            color: white;
+            background: var(--primary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background: white;
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            touch-action: none; /* ブラウザのスクロールと競合しないように */
+            border-left: 6px solid var(--primary);
+        }
+
+        .handle { color: #ccc; margin-right: 10px; font-size: 1.2rem; }
+        .time-input { width: 60px; border: none; font-weight: bold; color: var(--primary); }
+        .content-input { flex-grow: 1; border: none; margin: 0 5px; font-size: 0.95rem; }
+        .cost-input { width: 60px; text-align: right; }
+
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-add { background: var(--secondary); color: white; width: 100%; margin-bottom: 20px; }
+        .btn-save { background: var(--primary); color: white; width: 100%; margin-top: 10px; }
+        .btn-del { background: #eee; color: #666; margin-left: 5px; padding: 5px 10px; }
+
+        /* 履歴エリア */
+        .history-section { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; }
+        .history-item {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+        .btn-restore { background: #6c757d; color: white; padding: 2px 8px; font-size: 0.7rem; }
+
+        .total-val { font-size: 1.3rem; color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🚗 下関ドライブしおり 🧽</h1>
+    <h1>🚗 旅のしおり - とも様用 🧽</h1>
 
     <div class="box">
-        <h3>💰 費用設定</h3>
-        <div>初期費用 (高速・燃料・宿等): <input type="number" id="base-cost" value="25000" oninput="calc()"> 円</div>
-        <div id="total-display" class="total-area">合計: 0 円</div>
+        <div class="cost-row">
+            <span>初期費用:</span>
+            <input type="number" id="base-cost" value="25000" oninput="calc()" style="width: 100px;"> 円
+        </div>
+        <div style="text-align: right; margin-top: 10px;">
+            合計: <span id="total-display" class="total-val">0</span> 円
+        </div>
+        <button class="btn btn-save" onclick="saveData()">💾 現在の移動を保存する</button>
     </div>
 
-    <div class="day-label">12月29日 (月)</div>
-    <div id="list-d1">
-        <div class="card"><input class="time-input" value="01:30"><input class="content-input" value="小牧 出発"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
-        <div class="card"><input class="time-input" value="04:00"><input class="content-input" value="【京都】大津SA (お土産)"><input class="cost-input" value="1000" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
-        <div class="card"><input class="time-input" value="09:00"><input class="content-input" value="【岡山】吉備SA (スポンジボブ捜索)"><input class="cost-input" value="2000" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
-        <div class="card"><input class="time-input" value="11:30"><input class="content-input" value="【広島】原爆ドーム周辺"><input class="cost-input" value="1500" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
-        <div class="card"><input class="time-input" value="15:00"><input class="content-input" value="下関ホテル着"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+    <div id="schedule-container">
+        <div class="day-header">スケジュール（長押しで移動）</div>
+        <div id="main-list">
+            <div class="card"><span class="handle">☰</span><input class="time-input" value="01:30"><input class="content-input" value="小牧 出発"><input type="number" class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+            <div class="card"><span class="handle">☰</span><input class="time-input" value="09:00"><input class="content-input" value="吉備SA (スポンジボブ)"><input type="number" class="cost-input" value="1000" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+            <div class="card"><span class="handle">☰</span><input class="time-input" value="15:00"><input class="content-input" value="下関ホテル着"><input type="number" class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+        </div>
+        <button class="btn btn-add" onclick="addNewItem()">＋ 予定を追加</button>
     </div>
-    <button class="btn btn-add" onclick="add('list-d1')">＋ 項目を追加</button>
 
-    <div class="day-label">12月30日 (火)</div>
-    <div id="list-d2">
-        <div class="card"><input class="time-input" value="09:00"><input class="content-input" value="亀山八幡宮・赤間神宮 (御朱印)"><input class="cost-input" value="1000" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
-        <div class="card"><input class="time-input" value="11:30"><input class="content-input" value="角島大橋 (絶景ドライブ)"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
-        <div class="card"><input class="time-input" value="13:00"><input class="content-input" value="下関 出発 (帰路)"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+    <div class="history-section">
+        <div style="font-weight: bold; margin-bottom: 10px;">🕒 保存した記録</div>
+        <div id="history-list"></div>
     </div>
-    <button class="btn btn-add" onclick="add('list-d2')">＋ 項目を追加</button>
-
 </div>
 
 <script>
-    [document.getElementById('list-d1'), document.getElementById('list-d2')].forEach(el => {
-        Sortable.create(el, { animation: 150 });
+    // 長押し(500ms)でドラッグ開始
+    const el = document.getElementById('main-list');
+    Sortable.create(el, {
+        handle: '.handle',
+        animation: 150,
+        delay: 500,
+        delayOnTouchOnly: true,
+        onEnd: () => { console.log('並び替え完了'); }
     });
 
     function calc() {
         let total = parseInt(document.getElementById('base-cost').value) || 0;
         document.querySelectorAll('.cost-input').forEach(i => total += (parseInt(i.value) || 0));
-        document.getElementById('total-display').innerText = "概算合計: " + total.toLocaleString() + " 円";
+        document.getElementById('total-display').innerText = total.toLocaleString();
     }
 
-    function add(id) {
+    function addNewItem() {
         const div = document.createElement('div');
         div.className = 'card';
-        div.innerHTML = `<input class="time-input" value="00:00"><input class="content-input" value="新規予定"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button>`;
-        document.getElementById(id).appendChild(div);
+        div.innerHTML = `<span class="handle">☰</span><input class="time-input" value="12:00"><input class="content-input" value="新しい予定"><input type="number" class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button>`;
+        document.getElementById('main-list').appendChild(div);
         calc();
     }
-    calc();
+
+    // ローカルストレージに保存
+    function saveData() {
+        const items = [];
+        document.querySelectorAll('.card').forEach(card => {
+            items.push({
+                time: card.querySelector('.time-input').value,
+                content: card.querySelector('.content-input').value,
+                cost: card.querySelector('.cost-input').value
+            });
+        });
+        const data = {
+            base: document.getElementById('base-cost').value,
+            items: items,
+            date: new Date().toLocaleString()
+        };
+        
+        let history = JSON.parse(localStorage.getItem('travel_history') || '[]');
+        history.unshift(data);
+        if(history.length > 5) history.pop(); // 最大5件保持
+        localStorage.setItem('travel_history', JSON.stringify(history));
+        alert('保存しました！');
+        renderHistory();
+    }
+
+    // 履歴を表示
+    function renderHistory() {
+        const historyList = document.getElementById('history-list');
+        const history = JSON.parse(localStorage.getItem('travel_history') || '[]');
+        historyList.innerHTML = history.map((h, index) => `
+            <div class="history-item">
+                <span>${h.date}</span>
+                <button class="btn-restore" onclick="restore(${index})">戻す</button>
+            </div>
+        `).join('');
+    }
+
+    // 記録を復元
+    function restore(index) {
+        const history = JSON.parse(localStorage.getItem('travel_history') || '[]');
+        const data = history[index];
+        document.getElementById('base-cost').value = data.base;
+        const list = document.getElementById('main-list');
+        list.innerHTML = '';
+        data.items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `<span class="handle">☰</span><input class="time-input" value="${item.time}"><input class="content-input" value="${item.content}"><input type="number" class="cost-input" value="${item.cost}" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button>`;
+            list.appendChild(div);
+        });
+        calc();
+        alert('記録を復元しました。');
+    }
+
+    window.onload = () => { calc(); renderHistory(); };
 </script>
 </body>
 </html>
