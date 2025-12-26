@@ -3,136 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>小牧〜下関しおり</title>
+    <title>小牧〜下関 高機能しおり</title>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
-        :root { --main: #5d9cec; --sub: #48cfad; --warn: #fc6e51; --bg: #f8f9fa; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #333; font-size: 14px; }
-        .container { max-width: 100%; }
+        :root { --main: #5d9cec; --sub: #48cfad; --warn: #fc6e51; --bg: #f0f2f5; }
+        * { box-sizing: border-box; font-family: sans-serif; }
+        body { background: var(--bg); margin: 0; padding: 10px; font-size: 14px; }
+        .box { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
         
-        /* 費用表示 */
-        .box { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .flex-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        input[type="number"], input[type="text"] { border: 1px solid #ddd; border-radius: 4px; padding: 6px; font-size: 14px; }
-        
-        .total-price { color: var(--warn); font-size: 1.4rem; font-weight: bold; }
+        /* 費用セクション */
+        .cost-detail { font-size: 0.8rem; border-top: 1px solid #eee; margin-top: 10px; padding-top: 10px; }
+        .cost-item { display: flex; gap: 5px; margin-bottom: 5px; }
+        .cost-item input { border: 1px solid #ddd; padding: 4px; border-radius: 4px; }
 
-        /* スケジュール */
-        .day-tag { background: var(--main); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px; margin: 15px 0 8px; display: inline-block; }
+        /* スケジュールカード */
+        .day-label { background: var(--main); color: white; padding: 5px 15px; border-radius: 20px; display: inline-block; margin: 10px 0; font-weight: bold; }
         .card { 
-            background: white; margin-bottom: 6px; padding: 10px 8px; border-radius: 8px;
-            display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border-left: 4px solid var(--main); touch-action: none;
+            background: white; border-radius: 12px; margin-bottom: 10px; padding: 15px; 
+            border-left: 6px solid var(--main); box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .handle { color: #ccc; padding: 0 8px; font-size: 18px; cursor: move; }
-        .t-in { width: 50px; border: none; font-weight: bold; color: var(--main); background: transparent; }
-        .c-in { flex-grow: 1; border: none; margin: 0 4px; background: transparent; min-width: 0; }
-        .p-in { width: 55px; text-align: right; border: 1px solid #eee; border-radius: 4px; }
-
-        /* ボタン */
-        .btn { border: none; border-radius: 8px; padding: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 5px; }
-        .btn-save { background: var(--main); color: white; }
-        .btn-add { background: var(--sub); color: white; margin-top: 15px; }
-        .btn-del { background: #f0f0f0; color: #999; padding: 4px 8px; font-size: 12px; width: auto; margin-left: 4px; }
-
-        /* 履歴表示 */
-        .history-box { margin-top: 25px; padding: 10px; border-top: 1px solid #ddd; }
-        .hist-item { display: flex; justify-content: space-between; background: #eee; padding: 8px; border-radius: 6px; margin-bottom: 4px; font-size: 11px; }
-        .btn-restore { background: #666; color: white; padding: 2px 8px; border-radius: 4px; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .place-name { font-weight: bold; font-size: 1.1rem; flex-grow: 1; border: none; border-bottom: 1px solid #eee; }
+        .time-group { display: flex; flex-direction: column; font-size: 0.85rem; color: #666; min-width: 80px; }
+        
+        /* 移動・滞在のネスト表示 */
+        .nest-info { background: #f9f9f9; padding: 8px; border-radius: 8px; margin: 10px 0; font-size: 0.85rem; border-left: 3px dashed #ccc; }
+        
+        /* ボタン類 */
+        .map-link { text-decoration: none; font-size: 1.2rem; margin-left: 10px; }
+        .btn { border: none; border-radius: 8px; padding: 10px; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-save { background: var(--main); color: white; margin-bottom: 10px; }
+        .btn-add { background: var(--sub); color: white; }
+        .btn-del { background: #eee; color: #999; width: auto; padding: 2px 8px; font-size: 11px; margin-top: 10px; }
+        
+        .total-area { text-align: right; font-size: 1.2rem; font-weight: bold; color: var(--warn); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="box">
-        <div class="flex-row">
-            <span>初期費用(高速・燃料・宿):</span>
-            <input type="number" id="base-cost" value="18000" oninput="calc()" style="width:90px">
-        </div>
-        <div class="flex-row" style="justify-content: flex-end;">
-            <span>合計: <span id="total" class="total-price">0</span> 円</span>
-        </div>
-        <button class="btn btn-save" onclick="saveData()">💾 変更を保存（バックアップ）</button>
+<div class="box">
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+        <span>💰 合計費用:</span>
+        <span id="total-price" class="total-area">0</span><span>円</span>
     </div>
-
-    <div id="list">
-        <div class="day-tag">12月29日：移動と観光</div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="01:30"><input class="c-in" value="小牧 出発"><input type="number" class="p-in" value="0" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="03:30"><input class="c-in" value="【京都】大津SA"><input type="number" class="p-in" value="1000" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="05:30"><input class="c-in" value="【大阪】吹田SA(スポンジボブ)"><input type="number" class="p-in" value="1000" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="08:00"><input class="c-in" value="【岡山】吉備SA(きびだんご)"><input type="number" class="p-in" value="1000" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="10:30"><input class="c-in" value="【広島】原爆ドーム"><input type="number" class="p-in" value="500" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="13:30"><input class="c-in" value="【広島】宮島SA(お好み焼き)"><input type="number" class="p-in" value="1500" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="15:00"><input class="c-in" value="下関ホテル着"><input type="number" class="p-in" value="0" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-        
-        <div class="day-tag">12月30日：下関・角島</div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="09:00"><input class="c-in" value="亀山八幡・赤間神宮(御朱印)"><input type="number" class="p-in" value="1000" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="10:30"><input class="c-in" value="角島大橋"><input type="number" class="p-in" value="0" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-        <div class="card"><span class="handle">☰</span><input class="t-in" value="13:00"><input class="c-in" value="下関 出発"><input type="number" class="p-in" value="0" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button></div>
-    </div>
-
-    <button class="btn btn-add" onclick="addItem()">＋ 予定を追加</button>
-
-    <div class="history-box">
-        <div style="font-weight:bold; margin-bottom:8px">🕒 保存履歴（ここから戻せます）</div>
-        <div id="h-list"></div>
-    </div>
+    <button class="btn btn-save" onclick="saveData()" style="margin-top:10px">💾 記録を保存する</button>
+    <div id="history-list" style="font-size: 11px; color: #666; margin-top: 5px;"></div>
 </div>
 
+<div id="schedule-list">
+    <div class="day-label">12月29日</div>
+    
+    <div class="card">
+        <div class="card-header">
+            <input class="place-name" value="小牧 出発">
+            <a href="#" class="map-link" onclick="openMap(this)">🗺️</a>
+        </div>
+        <div class="time-group">
+            <span>発 01:30</span>
+        </div>
+        <div class="nest-info">
+            🚗 移動時間: <input type="text" style="width:50px; border:none; background:transparent" value="2時間">
+        </div>
+        <div class="cost-detail">
+            <div class="cost-item">
+                <input type="text" placeholder="費目" value="高速代" style="width:60px">
+                <input type="number" class="p-in" value="10290" oninput="calc()" style="width:80px">円
+            </div>
+            <div class="cost-item">
+                <input type="text" placeholder="費目" value="燃料代" style="width:60px">
+                <input type="number" class="p-in" value="8000" oninput="calc()" style="width:80px">円
+            </div>
+        </div>
+        <button class="btn-del" onclick="this.parentElement.remove();calc()">削除</button>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <input class="place-name" value="大津SA（京都）">
+            <a href="#" class="map-link" onclick="openMap(this)">🗺️</a>
+        </div>
+        <div class="time-group">
+            <span>着 03:30</span>
+            <span>発 04:00</span>
+        </div>
+        <div class="nest-info">
+            ⏱️ 滞在時間: 30分<br>
+            🚗 次への移動: 1.5時間
+        </div>
+        <div class="cost-detail">
+            <div class="cost-item">
+                <input type="text" placeholder="費目" value="お土産" style="width:60px">
+                <input type="number" class="p-in" value="2000" oninput="calc()" style="width:80px">円
+            </div>
+        </div>
+        <button class="btn-del" onclick="this.parentElement.remove();calc()">削除</button>
+    </div>
+    
+    </div>
+
+<button class="btn btn-add" onclick="addCard()">＋ 立ち寄り先を追加</button>
+
 <script>
-    const sortable = Sortable.create(document.getElementById('list'), {
-        handle: '.handle', animation: 150, delay: 400, delayOnTouchOnly: true
+    // 並び替え機能
+    Sortable.create(document.getElementById('schedule-list'), {
+        animation: 150, delay: 500, delayOnTouchOnly: true
     });
 
-    function calc() {
-        let t = parseInt(document.getElementById('base-cost').value) || 0;
-        document.querySelectorAll('.p-in').forEach(i => t += (parseInt(i.value) || 0));
-        document.getElementById('total').innerText = t.toLocaleString();
+    // Googleマップ検索を開く
+    function openMap(el) {
+        const name = el.parentElement.querySelector('.place-name').value;
+        window.open(`https://www.google.com/maps/search/${encodeURIComponent(name)}`, '_blank');
     }
 
-    function del(btn) { btn.parentElement.remove(); calc(); }
+    // 費用計算
+    function calc() {
+        let total = 0;
+        document.querySelectorAll('.p-in').forEach(i => total += (parseInt(i.value) || 0));
+        document.getElementById('total-price').innerText = total.toLocaleString();
+    }
 
-    function addItem() {
-        const d = document.createElement('div');
-        d.className = 'card';
-        d.innerHTML = `<span class="handle">☰</span><input class="t-in" value="12:00"><input class="c-in" value="新しい予定"><input type="number" class="p-in" value="0" oninput="calc()"><button class="btn-del" onclick="del(this)">×</button>`;
-        document.getElementById('list').appendChild(d);
+    // 新しいカード追加
+    function addCard() {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+            <div class="card-header">
+                <input class="place-name" placeholder="場所名を入力">
+                <a href="#" class="map-link" onclick="openMap(this)">🗺️</a>
+            </div>
+            <div class="time-group">
+                <span>着 <input type="text" value="00:00" style="width:40px; border:none"></span>
+                <span>発 <input type="text" value="00:00" style="width:40px; border:none"></span>
+            </div>
+            <div class="nest-info">⏱️ 滞在/移動を入力</div>
+            <div class="cost-detail">
+                <div class="cost-item">
+                    <input type="text" placeholder="費目" style="width:60px">
+                    <input type="number" class="p-in" value="0" oninput="calc()" style="width:80px">円
+                </div>
+            </div>
+            <button class="btn-del" onclick="this.parentElement.remove();calc()">削除</button>
+        `;
+        document.getElementById('schedule-list').appendChild(div);
         calc();
     }
 
+    // 保存と復元
     function saveData() {
         const data = {
-            base: document.getElementById('base-cost').value,
-            html: document.getElementById('list').innerHTML,
+            html: document.getElementById('schedule-list').innerHTML,
             time: new Date().toLocaleTimeString()
         };
-        let h = JSON.parse(localStorage.getItem('trip_save') || '[]');
-        h.unshift(data);
-        localStorage.setItem('trip_save', JSON.stringify(h.slice(0,5)));
-        renderH();
+        localStorage.setItem('travel_pro_save', JSON.stringify(data));
+        renderHistory();
         alert('保存しました！');
     }
 
-    function renderH() {
-        const h = JSON.parse(localStorage.getItem('trip_save') || '[]');
-        document.getElementById('h-list').innerHTML = h.map((d, i) => `
-            <div class="hist-item">
-                <span>保存済み (${d.time})</span>
-                <button class="btn-restore" onclick="restore(${i})">戻す</button>
-            </div>
-        `).join('');
+    function renderHistory() {
+        const saved = JSON.parse(localStorage.getItem('travel_pro_save'));
+        if(saved) {
+            document.getElementById('history-list').innerHTML = 
+                `最終保存: ${saved.time} <button onclick="restoreData()" style="font-size:10px">復元</button>`;
+        }
     }
 
-    function restore(i) {
-        const h = JSON.parse(localStorage.getItem('trip_save') || '[]');
-        document.getElementById('base-cost').value = h[i].base;
-        document.getElementById('list').innerHTML = h[i].html;
-        calc();
-        alert('復元しました！');
+    function restoreData() {
+        const saved = JSON.parse(localStorage.getItem('travel_pro_save'));
+        if(saved) {
+            document.getElementById('schedule-list').innerHTML = saved.html;
+            calc();
+        }
     }
 
-    window.onload = () => { calc(); renderH(); };
+    window.onload = () => { calc(); renderHistory(); };
 </script>
 </body>
 </html>
