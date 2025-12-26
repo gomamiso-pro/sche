@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【2025最新】小牧〜下関 旅のしおり</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        :root { --primary: #5d9cec; --bg: #f5f7fa; --text: #434a54; --accent: #fc6e51; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h1 { text-align: center; color: var(--primary); }
+        .day-label { background: var(--primary); color: white; padding: 8px 15px; border-radius: 20px; display: inline-block; margin: 20px 0 10px; font-weight: bold; }
+        .card { background: white; margin-bottom: 8px; padding: 12px; border-radius: 8px; border-left: 5px solid var(--primary); display: flex; align-items: center; cursor: grab; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .time-input { width: 60px; font-weight: bold; border: none; color: var(--primary); font-size: 1rem; }
+        .content-input { flex-grow: 1; border: none; padding: 5px; font-size: 0.95rem; margin: 0 10px; }
+        .cost-input { width: 70px; border: 1px solid #ddd; border-radius: 4px; padding: 3px; text-align: right; }
+        .btn { border: none; border-radius: 5px; cursor: pointer; padding: 8px 12px; }
+        .btn-add { background: #48cfad; color: white; width: 100%; margin-top: 10px; }
+        .btn-del { background: #ed5565; color: white; margin-left: 10px; font-size: 0.7rem; }
+        .total-area { text-align: right; font-size: 1.2rem; font-weight: bold; color: var(--accent); margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚗 下関ドライブしおり 🧽</h1>
+
+    <div class="box">
+        <h3>💰 費用設定</h3>
+        <div>初期費用 (高速・燃料・宿等): <input type="number" id="base-cost" value="25000" oninput="calc()"> 円</div>
+        <div id="total-display" class="total-area">合計: 0 円</div>
+    </div>
+
+    <div class="day-label">12月29日 (月)</div>
+    <div id="list-d1">
+        <div class="card"><input class="time-input" value="01:30"><input class="content-input" value="小牧 出発"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+        <div class="card"><input class="time-input" value="04:00"><input class="content-input" value="【京都】大津SA (お土産)"><input class="cost-input" value="1000" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+        <div class="card"><input class="time-input" value="09:00"><input class="content-input" value="【岡山】吉備SA (スポンジボブ捜索)"><input class="cost-input" value="2000" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+        <div class="card"><input class="time-input" value="11:30"><input class="content-input" value="【広島】原爆ドーム周辺"><input class="cost-input" value="1500" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+        <div class="card"><input class="time-input" value="15:00"><input class="content-input" value="下関ホテル着"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+    </div>
+    <button class="btn btn-add" onclick="add('list-d1')">＋ 項目を追加</button>
+
+    <div class="day-label">12月30日 (火)</div>
+    <div id="list-d2">
+        <div class="card"><input class="time-input" value="09:00"><input class="content-input" value="亀山八幡宮・赤間神宮 (御朱印)"><input class="cost-input" value="1000" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+        <div class="card"><input class="time-input" value="11:30"><input class="content-input" value="角島大橋 (絶景ドライブ)"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+        <div class="card"><input class="time-input" value="13:00"><input class="content-input" value="下関 出発 (帰路)"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button></div>
+    </div>
+    <button class="btn btn-add" onclick="add('list-d2')">＋ 項目を追加</button>
+
+</div>
+
+<script>
+    [document.getElementById('list-d1'), document.getElementById('list-d2')].forEach(el => {
+        Sortable.create(el, { animation: 150 });
+    });
+
+    function calc() {
+        let total = parseInt(document.getElementById('base-cost').value) || 0;
+        document.querySelectorAll('.cost-input').forEach(i => total += (parseInt(i.value) || 0));
+        document.getElementById('total-display').innerText = "概算合計: " + total.toLocaleString() + " 円";
+    }
+
+    function add(id) {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<input class="time-input" value="00:00"><input class="content-input" value="新規予定"><input class="cost-input" value="0" oninput="calc()"><button class="btn-del" onclick="this.parentElement.remove();calc()">×</button>`;
+        document.getElementById(id).appendChild(div);
+        calc();
+    }
+    calc();
+</script>
+</body>
+</html>
